@@ -15,42 +15,26 @@
     </span>
 
     <ul class="colors colors--black">
-      <li class="colors__item">
-        <label class="colors__label">
-          <input
-            class="colors__radio sr-only"
-            type="radio"
-            name="color-1"
-            value="#73B6EA"
-            checked=""
-          />
-          <span class="colors__value" style="background-color: #73B6EA;"> </span>
-        </label>
-      </li>
-      <li class="colors__item">
-        <label class="colors__label">
-          <input
-            class="colors__radio sr-only"
-            type="radio"
-            name="color-1"
-            value="#8BE000"
-          />
-          <span class="colors__value" style="background-color: #8BE000;"> </span>
-        </label>
-      </li>
-      <li class="colors__item">
-        <label class="colors__label">
-          <input class="colors__radio sr-only" type="radio" name="color-1" value="#222" />
-          <span class="colors__value" style="background-color: #222;"> </span>
-        </label>
-      </li>
+      <input-radio-color-item
+        v-for="color in product.colors"
+        :key="`${product.id}-${color}`"
+        :color="color"
+        input-name="color-1"
+        v-model="productColor"
+      />
     </ul>
   </li>
 </template>
 
 <script>
+import InputRadioColorItem from '@/components/Form/InputRadioColorItem.vue';
+
 export default {
   name: 'ProductItem',
+
+  components: {
+    InputRadioColorItem,
+  },
 
   props: {
     product: {
@@ -60,5 +44,9 @@ export default {
       },
     },
   },
+
+  data: () => ({
+    productColor: '',
+  }),
 };
 </script>
