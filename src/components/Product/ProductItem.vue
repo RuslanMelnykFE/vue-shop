@@ -1,17 +1,21 @@
 <template>
   <li class="catalog__item">
-    <a class="catalog__pic" href="#">
+    <a
+      class="catalog__pic"
+      href="#"
+      @click.prevent="gotoPage('product', { id: product.id })"
+    >
       <img :src="product.image" srcset="img/radio@2x.jpg 2x" alt="Название товара" />
     </a>
 
     <h3 class="catalog__title">
-      <a href="#">
+      <a href="#"  @click.prevent="gotoPage(product.id)">
         {{ product.title }}
       </a>
     </h3>
 
     <span class="catalog__price">
-      {{ product.price }} ₽
+      {{ product.price | formatedNumber }} ₽
     </span>
 
     <ul class="colors colors--black">
@@ -27,6 +31,9 @@
 </template>
 
 <script>
+import formatedNumber from '@/services/formatedNumber.service';
+import gotoPage from '@/services/gotoPage.service';
+
 import InputRadioColorItem from '@/components/Form/InputRadioColorItem.vue';
 
 export default {
@@ -34,6 +41,10 @@ export default {
 
   components: {
     InputRadioColorItem,
+  },
+
+  filters: {
+    formatedNumber,
   },
 
   props: {
@@ -48,5 +59,9 @@ export default {
   data: () => ({
     productColor: '',
   }),
+
+  methods: {
+    gotoPage,
+  },
 };
 </script>
