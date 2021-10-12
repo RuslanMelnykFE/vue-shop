@@ -135,7 +135,7 @@
             <product-counter
               width-button="12"
               height-button="12"
-              v-model.number="productAmount"
+              v-model="productAmount"
             />
 
             <button class="button button--primery" type="submit">
@@ -243,11 +243,6 @@ export default {
         this.totalAmountProduct = value;
       },
     },
-  },
-  created() {
-    const cartItem = this.cartProducts.find((item) => item.product.id === this.product.id);
-
-    this.totalAmountProduct = !cartItem ? 1 : cartItem.amount;
   },
 
   methods: {
