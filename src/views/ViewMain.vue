@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import products from '@/data/products';
 import ProductList from '@/components/Product/ProductList.vue';
 import ProductFilter from '@/components/Product/ProductFilter.vue';
@@ -51,10 +52,11 @@ export default {
     filterPriceTo: 0,
     filterPriceFrom: 0,
     filterCategoryId: 0,
-    filterColor: '',
+    filterColor: 0,
   }),
 
   computed: {
+    ...mapGetters('product', ['productsData', 'productPagination']),
     filteredProducts() {
       const filterPriceFrom = (product) => product.price > this.filterPriceFrom;
       const filterPriceTo = (product) => product.price < this.filterPriceTo;
@@ -82,20 +84,34 @@ export default {
       return filteredProducts;
     },
     products() {
-      const startIndex = (this.page - 1) * this.productsPerPage;
-      const endIndex = startIndex + this.productsPerPage;
-
-      return this.filteredProducts.slice(startIndex, endIndex);
+      return this.productsData.length ? this.productsData : [];
     },
     totalProducts() {
-      return this.filteredProducts.length;
+      return this.productsData.length ? this.productPagination.total : 1;
     },
   },
 
+  created() {
+    this.loadProductData({
+      page: this.page,
+      limit: this.productsPerPage,
+    });
+  },
+
   watch: {
+    page() {
+      this.loadProductData({
+        page: this.page,
+        limit: this.productsPerPage,
+      });
+    },
     filteredProducts() {
       this.page = 1;
     },
+  },
+
+  methods: {
+    ...mapActions('product', ['loadProductData']),
   },
 };
 </script>

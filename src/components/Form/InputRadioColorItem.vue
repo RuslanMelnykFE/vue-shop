@@ -5,13 +5,14 @@
         class="colors__radio sr-only"
         type="radio"
         name="color"
-        :value="color"
-        :checked="value === color"
+        :value="color.id"
+        :checked="value === color.id"
         @input="$emit('input', $event.target.value)"
       />
       <span
         class="colors__value"
-        :style="{'background-color': color}"> </span>
+        :style="{'background-color': color.code}">
+      </span>
     </label>
   </li>
 </template>
@@ -22,7 +23,7 @@ export default {
 
   props: {
     value: {
-      type: String,
+      type: [String, Number],
       required: true,
     },
     inputName: {
@@ -30,7 +31,7 @@ export default {
       required: true,
     },
     color: {
-      type: String,
+      type: Object,
       required: true,
     },
   },

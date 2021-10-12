@@ -4,7 +4,7 @@
       class="catalog__pic"
       :to="{ name: 'product', params: { productId: product.id } }"
     >
-      <img :src="product.image" srcset="img/radio@2x.jpg 2x" alt="Название товара" />
+      <img :src="product.image.file.url" :alt="product.title" />
     </router-link>
 
     <h3 class="catalog__title">
@@ -20,7 +20,7 @@
     <ul class="colors colors--black">
       <input-radio-color-item
         v-for="color in product.colors"
-        :key="`${product.id}-${color}`"
+        :key="`${product.id}-${color.code}`"
         :color="color"
         input-name="color-1"
         v-model="productColor"
