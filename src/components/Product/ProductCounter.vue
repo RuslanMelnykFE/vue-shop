@@ -13,8 +13,10 @@
     <input
       type="text"
       name="count"
-      :value="value"
-      @input="$emit('input', $event.target.value)"
+      v-model.number="inputValue"
+      @input="amountInput($event.target.value)"
+      @blur="amountInput($event.target.value)"
+      @focus="amountInput($event.target.value)"
     />
 
     <button
@@ -35,7 +37,7 @@ export default {
 
   props: {
     value: {
-      type: Number,
+      type: [Number, String],
       default: 1,
     },
     widthButton: {
@@ -48,13 +50,41 @@ export default {
     },
   },
 
+  data: () => ({
+    inputValue: 1,
+    timerId: 0,
+  }),
+
+  created() {
+    this.inputValue = this.value;
+  },
+
+  watch: {
+    value(newVal) {
+      this.inputValue = newVal;
+    },
+  },
+
   methods: {
+    amountInput(value) {
+      clearTimeout(this.timerId);
+
+      this.timerId = setTimeout(() => {
+        if (!Number(value) || value < 1) {
+          this.inputValue = 1;
+          this.$emit('input', 1);
+          return;
+        }
+
+        this.$emit('input', this.inputValue);
+      }, 500);
+    },
     productIncrement() {
-      this.$emit('input', this.value + 1);
+      this.$emit('input', this.inputValue + 1);
     },
     productDecrement() {
-      if (this.value > 1) {
-        this.$emit('input', this.value - 1);
+      if (this.inputValue > 1) {
+        this.$emit('input', this.inputValue - 1);
       }
     },
   },

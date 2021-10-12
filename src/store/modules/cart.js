@@ -81,7 +81,7 @@ const cart = {
       const cartItem = cartProducts.find((product) => product.productId === productId);
 
       if (cartItem) {
-        cartItem.amount = amount;
+        cartItem.amount += amount;
         commit('updateCartAmount', cartProducts);
         return;
       }
