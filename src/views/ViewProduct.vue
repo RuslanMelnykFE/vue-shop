@@ -1,34 +1,51 @@
 <template>
   <main class="content container">
-    <div class="content__top">
-      <ul class="breadcrumbs">
-        <li class="breadcrumbs__item">
-          <router-link class="breadcrumbs__link" :to="{ name: 'main' }">
-            Каталог
-          </router-link>
-        </li>
-        <li class="breadcrumbs__item">
-          <router-link class="breadcrumbs__link" :to="{ name: 'main' }">
-            {{ currentCategory }}
-          </router-link>
-        </li>
-        <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link">
-            {{ currentProduct.title }}
-          </a>
-        </li>
-      </ul>
-    </div>
+    <template v-if="productError.errorCode">
+      <div class="item__form">
+        <h3 class="header__info">
+          {{ productError.errorMessage }}
+        </h3>
 
-    <the-product
-      :product="currentProduct"
-    />
+        <button
+          class="button button--primery"
+          @click.prevent="loadProduct($route.params.productId)"
+        >
+          Попробуйте еще раз
+        </button>
+      </div>
+    </template>
+    <template
+      v-if="!productError.errorCode"
+    >
+      <div class="content__top">
+        <ul class="breadcrumbs">
+          <li class="breadcrumbs__item">
+            <router-link class="breadcrumbs__link" :to="{ name: 'main' }">
+              Каталог
+            </router-link>
+          </li>
+          <li class="breadcrumbs__item">
+            <router-link class="breadcrumbs__link" :to="{ name: 'main' }">
+              {{ currentCategory }}
+            </router-link>
+          </li>
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link">
+              {{ currentProduct.title }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <the-product
+        :product="currentProduct"
+      />
+    </template>
   </main>
 </template>
 
 <script>
-import products from '@/data/products';
-import categories from '@/data/categories';
+import { mapActions, mapGetters } from 'vuex';
 import TheProduct from '@/components/Product/TheProduct.vue';
 
 export default {
@@ -39,16 +56,30 @@ export default {
   },
 
   computed: {
+    ...mapGetters('product', ['productData', 'productError']),
     currentProduct() {
-      const { productId } = this.$route.params;
-      return products.find((product) => product.id === productId);
+      return this.productData ? this.productData : {};
     },
 
     currentCategory() {
-      const { categoryId } = this.currentProduct;
-
-      return categories.find((category) => category.id === categoryId).title;
+      return this.currentProduct.category ? this.currentProduct.category.title : '';
     },
+  },
+
+  watch: {
+    '$route.params': {
+      handler(newVal) {
+        const { productId } = newVal;
+        this.loadProduct(productId);
+      },
+      immediate: true,
+    },
+  },
+
+  methods: {
+    ...mapActions('product', {
+      loadProduct: 'loadProductData',
+    }),
   },
 };
 </script>

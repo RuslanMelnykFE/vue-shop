@@ -15,7 +15,10 @@
         </label>
       </fieldset>
 
-      <fieldset class="form__block">
+      <fieldset
+        v-if="categories.length"
+        class="form__block"
+      >
         <legend class="form__legend">Категория</legend>
         <label class="form__label form__label--select">
           <select class="form__select" type="text" name="category" v-model.number="categoryIdValue">
@@ -32,22 +35,25 @@
         </label>
       </fieldset>
 
-      <fieldset class="form__block">
+      <fieldset
+        v-if="colors.length"
+        class="form__block"
+      >
         <legend class="form__legend">Цвет</legend>
         <ul class="colors">
           <input-radio-color-item
             v-for="color in colors"
-            :key="color"
+            :key="`color-filter-${color.id}`"
             :color="color"
             input-name="color"
-            v-model="colorValue"
+            v-model.number="colorValue"
           />
         </ul>
       </fieldset>
 
-            <fieldset class="form__block">
-              <legend class="form__legend">Объемб в ГБ</legend>
-              <ul class="check-list">
+      <fieldset class="form__block">
+        <legend class="form__legend">Объемб в ГБ</legend>
+          <ul class="check-list">
                 <li class="check-list__item">
                   <label class="check-list__label">
                     <input
@@ -133,8 +139,8 @@
                     </span>
                   </label>
                 </li>
-              </ul>
-            </fieldset>
+          </ul>
+      </fieldset>
 
       <button class="filter__submit button button--primery" type="submit">
         Применить
@@ -151,8 +157,7 @@
 </template>
 
 <script>
-import categories from '@/data/categories';
-import colors from '@/data/colors';
+import { mapActions, mapGetters } from 'vuex';
 import InputRadioColorItem from '@/components/Form/InputRadioColorItem.vue';
 
 export default {
@@ -179,8 +184,8 @@ export default {
       require: true,
     },
     productColor: {
-      type: String,
-      default: '',
+      type: [String, Number],
+      default: 0,
       require: true,
     },
   },
@@ -189,16 +194,23 @@ export default {
     priceFromValue: 0,
     priceToValue: 0,
     categoryIdValue: 0,
-    colorValue: '',
+    colorValue: 0,
   }),
 
   computed: {
+    ...mapGetters('product', ['productCategories']),
+    ...mapGetters('colors', ['colorsData']),
     categories() {
-      return categories;
+      return this.productCategories.length ? this.productCategories : [];
     },
     colors() {
-      return colors;
+      return this.colorsData.length ? this.colorsData : [];
     },
+  },
+
+  created() {
+    this.loadProductCategories();
+    this.loadColorsData();
   },
 
   watch: {
@@ -217,6 +229,8 @@ export default {
   },
 
   methods: {
+    ...mapActions('product', ['loadProductCategories']),
+    ...mapActions('colors', ['loadColorsData']),
     submitForm() {
       this.$emit('update:priceFrom', this.priceFromValue);
       this.$emit('update:priceTo', this.priceToValue);
@@ -227,7 +241,7 @@ export default {
       this.$emit('update:priceFrom', 0);
       this.$emit('update:priceTo', 0);
       this.$emit('update:categoryId', 0);
-      this.$emit('update:productColor', '');
+      this.$emit('update:productColor', 0);
     },
   },
 };

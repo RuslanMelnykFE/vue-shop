@@ -17,7 +17,7 @@
         :product-color.sync="filterColor"
       />
 
-      <section class="catalog">
+      <section class="catalog" v-show="!productsErrorMessage">
         <product-list
           :product-list="products"
         />
@@ -27,12 +27,16 @@
           :total-elements="totalProducts"
         />
       </section>
+
+      <h3 v-show="productsErrorMessage">
+        {{ productsErrorMessage }}
+      </h3>
     </div>
   </main>
 </template>
 
 <script>
-import products from '@/data/products';
+import { mapActions, mapGetters } from 'vuex';
 import ProductList from '@/components/Product/ProductList.vue';
 import ProductFilter from '@/components/Product/ProductFilter.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
@@ -51,50 +55,72 @@ export default {
     filterPriceTo: 0,
     filterPriceFrom: 0,
     filterCategoryId: 0,
-    filterColor: '',
+    filterColor: 0,
+    loadProductsTimer: 0,
   }),
 
   computed: {
-    filteredProducts() {
-      const filterPriceFrom = (product) => product.price > this.filterPriceFrom;
-      const filterPriceTo = (product) => product.price < this.filterPriceTo;
-      const filterCategoryId = (product) => product.categoryId === this.filterCategoryId;
-      const filterColor = (product) => product.colors.includes(this.filterColor);
-
-      let filteredProducts = products;
-
-      if (this.filterPriceFrom > 0) {
-        filteredProducts = filteredProducts.filter(filterPriceFrom);
-      }
-
-      if (this.filterPriceTo > 0) {
-        filteredProducts = filteredProducts.filter(filterPriceTo);
-      }
-
-      if (this.filterCategoryId > 0) {
-        filteredProducts = filteredProducts.filter(filterCategoryId);
-      }
-
-      if (this.filterColor.length) {
-        filteredProducts = filteredProducts.filter(filterColor);
-      }
-
-      return filteredProducts;
-    },
+    ...mapGetters('product', [
+      'productsData',
+      'productPagination',
+      'productsError',
+    ]),
     products() {
-      const startIndex = (this.page - 1) * this.productsPerPage;
-      const endIndex = startIndex + this.productsPerPage;
-
-      return this.filteredProducts.slice(startIndex, endIndex);
+      return this.productsData.length ? this.productsData : [];
     },
     totalProducts() {
-      return this.filteredProducts.length;
+      return this.productsData.length ? this.productPagination.total : 1;
+    },
+    productsParams() {
+      return {
+        categoryId: this.filterCategoryId,
+        colorId: this.filterColor,
+        page: this.page,
+        limit: this.productsPerPage,
+        minPrice: this.filterPriceFrom,
+        maxPrice: this.filterPriceTo,
+      };
+    },
+    productsErrorMessage() {
+      if (this.productsError) {
+        return this.productsError.errorMessage;
+      }
+
+      return null;
     },
   },
 
+  created() {
+    this.loadProducts(this.productsParams);
+  },
+
   watch: {
-    filteredProducts() {
-      this.page = 1;
+    page() {
+      this.loadProducts(this.productsParams);
+    },
+    productsPerPage() {
+      this.loadProducts(this.productsParams);
+    },
+    filterPriceTo() {
+      this.loadProducts(this.productsParams);
+    },
+    filterPriceFrom() {
+      this.loadProducts(this.productsParams);
+    },
+    filterCategoryId() {
+      this.loadProducts(this.productsParams);
+    },
+    filterColor() {
+      this.loadProducts(this.productsParams);
+    },
+  },
+
+  methods: {
+    ...mapActions('product', ['loadProductsData']),
+    loadProducts() {
+      clearTimeout(this.loadProductsTimer);
+
+      this.loadProductsTimer = setTimeout(() => this.loadProductsData(this.productsParams), 0);
     },
   },
 };

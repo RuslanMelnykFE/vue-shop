@@ -1,12 +1,15 @@
 <template>
   <section class="item">
     <div class="item__pics pics">
-      <div class="pics__wrapper">
+      <div
+        v-if="productImage"
+        class="pics__wrapper"
+      >
         <img
           width="570"
           height="570"
-          :src="product.image"
-          :alt="product.title"
+          :src="productImage.url"
+          :alt="productImage.title"
         />
       </div>
 
@@ -76,7 +79,7 @@
             <ul class="colors">
               <input-radio-color-item
                 v-for="color in product.colors"
-                :key="`item-${product.id}-${color}`"
+                :key="`item-${product.id}-${color.code}`"
                 :color="color"
                 input-name="color-item"
                 v-model="productColor"
@@ -142,6 +145,9 @@
               В корзину
             </button>
           </div>
+          <p v-show="cartSuccessStatus === 200">
+            Товар добавлен в корзину
+          </p>
         </form>
       </div>
     </div>
@@ -200,7 +206,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import formatedNumber from '@/services/formatedNumber.service';
 import InputRadioColorItem from '@/components/Form/InputRadioColorItem.vue';
 import ProductCounter from '@/components/Product/ProductCounter.vue';
@@ -232,9 +238,10 @@ export default {
   }),
 
   computed: {
-    ...mapGetters('cart', {
-      cartProducts: 'cartDetailProducts',
-    }),
+    ...mapGetters('cart', ['cartSuccessStatus']),
+    productImage() {
+      return this.product.image ? this.product.image.file : null;
+    },
     productAmount: {
       get() {
         return this.totalAmountProduct;
