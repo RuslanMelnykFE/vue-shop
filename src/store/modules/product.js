@@ -6,7 +6,7 @@ const product = {
   state: {
     productCategories: [],
     productsData: [],
-    productData: [],
+    productData: {},
     productPagination: {},
     productCategoriesError: {},
     productsError: {},
@@ -48,16 +48,20 @@ const product = {
   },
 
   actions: {
-    async loadProductCategories({ commit }) {
+    async loadProductCategories({ dispatch, commit }) {
       commit('updateProductCategoriesError', {});
+      dispatch('preloader/togglePreloader', true, { root: true });
 
       try {
         const { items } = await ProductService.getProductCategories();
 
         commit('updateProductCategories', items);
+        dispatch('preloader/togglePreloader', false, { root: true });
 
         return true;
       } catch (e) {
+        dispatch('preloader/togglePreloader', false, { root: true });
+
         if (e instanceof ProductError) {
           commit('updateProductCategoriesError', {
             errorCode: e.errorCode,
@@ -69,19 +73,47 @@ const product = {
       }
     },
 
-    async loadProductData({ commit }, requestParams) {
+    async loadProductsData({ dispatch, commit }, requestParams) {
       commit('updateProductsError', {});
+      dispatch('preloader/togglePreloader', true, { root: true });
 
       try {
         const { items, pagination } = await ProductService.getProducts(requestParams);
 
         commit('updateProductsData', items);
         commit('updateProductPagination', pagination);
+        dispatch('preloader/togglePreloader', false, { root: true });
 
         return true;
       } catch (e) {
+        dispatch('preloader/togglePreloader', false, { root: true });
+
         if (e instanceof ProductError) {
           commit('updateProductsError', {
+            errorCode: e.errorCode,
+            errorMessage: e.message,
+          });
+        }
+        return false;
+      }
+    },
+
+    async loadProductData({ dispatch, commit }, productId) {
+      commit('updateProductError', {});
+      dispatch('preloader/togglePreloader', true, { root: true });
+
+      try {
+        const data = await ProductService.getProduct(productId);
+
+        commit('updateProductData', data);
+        dispatch('preloader/togglePreloader', false, { root: true });
+
+        return true;
+      } catch (e) {
+        dispatch('preloader/togglePreloader', false, { root: true });
+
+        if (e instanceof ProductError) {
+          throw commit('updateProductError', {
             errorCode: e.errorCode,
             errorMessage: e.message,
           });

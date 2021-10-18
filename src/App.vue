@@ -3,6 +3,7 @@
     <base-header/>
     <router-view/>
     <base-footer/>
+    <base-preloader/>
   </div>
 </template>
 
@@ -10,6 +11,7 @@
 import { mapActions, mapMutations } from 'vuex';
 import BaseHeader from '@/components/BaseHeader.vue';
 import BaseFooter from '@/components/BaseFooter.vue';
+import BasePreloader from '@/components/BasePreloader.vue';
 
 export default {
   name: 'App',
@@ -17,6 +19,7 @@ export default {
   components: {
     BaseHeader,
     BaseFooter,
+    BasePreloader,
   },
 
   created() {
@@ -25,11 +28,11 @@ export default {
     if (userAccessKey) {
       this.updateAccesKey(userAccessKey);
     }
-    this.getCartData();
+    this.loadCartData();
   },
 
   methods: {
-    ...mapActions('cart', ['getCartData']),
+    ...mapActions('cart', ['loadCartData']),
     ...mapMutations('cart', ['updateAccesKey']),
   },
 };

@@ -15,7 +15,10 @@
         </label>
       </fieldset>
 
-      <fieldset class="form__block">
+      <fieldset
+        v-if="categories.length"
+        class="form__block"
+      >
         <legend class="form__legend">Категория</legend>
         <label class="form__label form__label--select">
           <select class="form__select" type="text" name="category" v-model.number="categoryIdValue">
@@ -32,7 +35,10 @@
         </label>
       </fieldset>
 
-      <fieldset class="form__block">
+      <fieldset
+        v-if="colors.length"
+        class="form__block"
+      >
         <legend class="form__legend">Цвет</legend>
         <ul class="colors">
           <input-radio-color-item
@@ -46,8 +52,8 @@
       </fieldset>
 
       <fieldset class="form__block">
-              <legend class="form__legend">Объемб в ГБ</legend>
-              <ul class="check-list">
+        <legend class="form__legend">Объемб в ГБ</legend>
+          <ul class="check-list">
                 <li class="check-list__item">
                   <label class="check-list__label">
                     <input
@@ -133,7 +139,7 @@
                     </span>
                   </label>
                 </li>
-              </ul>
+          </ul>
       </fieldset>
 
       <button class="filter__submit button button--primery" type="submit">

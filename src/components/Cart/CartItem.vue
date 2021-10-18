@@ -1,11 +1,14 @@
 <template>
   <li class="cart__item product">
-    <div class="product__pic">
+    <div
+      v-if="productImage"
+      class="product__pic"
+    >
       <img
-        :src="cartProduct.product.image"
+        :src="productImage.url"
         width="120"
         height="120"
-        :alt="cartProduct.product.title"
+        :alt="productImage.title"
       />
     </div>
     <h3 class="product__title">
@@ -69,8 +72,13 @@ export default {
         return this.cartProduct.amount;
       },
       set(value) {
-        this.updateProductAmount({ productId: this.cartProduct.productId, amount: value || 0 });
+        console.log('value: ', value);
+        this.updateProductAmount({ productId: this.cartProduct.productId, amount: value || 1 });
       },
+    },
+
+    productImage() {
+      return this.cartProduct.product.image ? this.cartProduct.product.image.file : null;
     },
   },
 

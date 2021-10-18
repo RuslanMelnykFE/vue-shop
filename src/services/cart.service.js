@@ -28,15 +28,43 @@ const CartService = {
     }
   },
 
-  async addProductToCart(userAccessKey, productData) {
-    const requestData = {
-      method: 'post',
+  setRequestData({ method, userAccessKey, productData }) {
+    return {
+      method,
       url: '/api/baskets/products',
       params: {
         userAccessKey,
       },
       data: productData,
     };
+  },
+
+  async addProductToCart(userAccessKey, productData) {
+    const requestData = this.setRequestData({ method: 'post', userAccessKey, productData });
+
+    try {
+      const { data, status } = await ApiService.customRequest(requestData);
+
+      return { data, status };
+    } catch (error) {
+      throw new CartError(error.response.status, error.response.data.error.message);
+    }
+  },
+
+  async changeProductAtCart(userAccessKey, productData) {
+    const requestData = this.setRequestData({ method: 'put', userAccessKey, productData });
+
+    try {
+      const { data } = await ApiService.customRequest(requestData);
+
+      return data;
+    } catch (error) {
+      throw new CartError(error.response.status, error.response.data.error.message);
+    }
+  },
+
+  async deleteProductAtCart(userAccessKey, productData) {
+    const requestData = this.setRequestData({ method: 'delete', userAccessKey, productData });
 
     try {
       const { data } = await ApiService.customRequest(requestData);
