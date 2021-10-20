@@ -192,6 +192,10 @@ const cart = {
         return false;
       }
     },
+    resetCart({ commit }) {
+      commit('updateCartProductsData', []);
+      commit('updateCartAmount', []);
+    },
   },
 };
 

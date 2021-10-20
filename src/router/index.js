@@ -21,6 +21,16 @@ const routes = [
     component: () => import('@/views/ViewCart.vue'),
   },
   {
+    name: 'order',
+    path: '/order',
+    component: () => import('@/views/ViewOrder.vue'),
+  },
+  {
+    name: 'orders',
+    path: '/orders/:orderId',
+    component: () => import('@/views/ViewOrderInfo.vue'),
+  },
+  {
     name: 'notFoundPage',
     path: '*',
     component: () => import('@/views/ViewNotFoundPage.vue'),

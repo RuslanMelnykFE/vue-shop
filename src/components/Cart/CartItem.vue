@@ -27,7 +27,7 @@
     />
 
     <b class="product__price">
-      {{ getSumProducts(cartProduct.amount, cartProduct.product.price) | formatedNumber }} ₽
+      {{ getSumProducts(cartProduct.amount, cartProduct.product.price) | formatedNumber }} у.е.
     </b>
 
     <button
@@ -45,7 +45,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import formatedNumber from '@/services/formatedNumber.service';
+import { formatedNumber } from '@/services/formated.service';
 import ProductCounter from '@/components/Product/ProductCounter.vue';
 
 export default {

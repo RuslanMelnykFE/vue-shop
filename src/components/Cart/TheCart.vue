@@ -15,11 +15,22 @@
         <p class="cart__desc">
           Мы&nbsp;посчитаем стоимость доставки на&nbsp;следующем этапе
         </p>
-        <p class="cart__price">Итого: <span>{{ totalPrice | formatedNumber }} ₽</span></p>
+        <p class="cart__price">Итого: <span>{{ totalPrice | formatedNumber }} у.е.</span></p>
 
-        <button class="cart__button button button--primery" type="submit">
-          Оформить заказ
-        </button>
+        <router-link
+          v-if="cartProducts.length"
+          :to="{name: 'order'}"
+          custom
+          v-slot="{ navigate }"
+        >
+          <button
+            class="cart__button button button--primery"
+            type="button"
+            @click="navigate"
+          >
+            Оформить заказ
+          </button>
+        </router-link>
       </div>
     </form>
   </section>
@@ -27,7 +38,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import formatedNumber from '@/services/formatedNumber.service';
+import { formatedNumber } from '@/services/formated.service';
 import CartItem from './CartItem.vue';
 
 export default {

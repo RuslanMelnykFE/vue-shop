@@ -14,7 +14,7 @@
     </h3>
 
     <span class="catalog__price">
-      {{ product.price | formatedNumber }} ₽
+      {{ product.price | formatedNumber }} у.е.
     </span>
 
     <ul class="colors colors--black">
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import formatedNumber from '@/services/formatedNumber.service';
+import { formatedNumber } from '@/services/formated.service';
 import gotoPage from '@/services/gotoPage.service';
 
 import InputRadioColorItem from '@/components/Form/InputRadioColorItem.vue';

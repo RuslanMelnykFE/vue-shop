@@ -8,8 +8,13 @@
           </router-link>
         </li>
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link">
+          <router-link class="breadcrumbs__link" :to="{ name: 'cart' }">
             Корзина
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <a class="breadcrumbs__link">
+            Оформление заказа
           </a>
         </li>
       </ul>
@@ -17,26 +22,26 @@
       <h1 class="content__title">
         Корзина
       </h1>
-      <span v-if="amountsProducts" class="content__info">
-        {{ amountsProducts }} {{ formatedText }}
+      <span class="content__info">
+        3 товара
       </span>
     </div>
 
-    <the-cart/>
+    <the-order/>
   </main>
 </template>
 
 <script>
 import { formatedProducts } from '@/mixins/formated.mixin';
-import TheCart from '@/components/Cart/TheCart.vue';
+import TheOrder from '@/components/Order/TheOrder.vue';
 
 export default {
-  name: 'ViewCart',
+  name: 'ViewOrder',
 
   mixins: [formatedProducts],
 
   components: {
-    TheCart,
+    TheOrder,
   },
 };
 </script>

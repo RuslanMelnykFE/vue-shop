@@ -71,7 +71,7 @@
       <div class="item__form">
         <form class="form" action="#" method="POST" @submit.prevent="submitFormCart">
           <b class="item__price">
-            {{ product.price | formatedNumber }} ₽
+            {{ product.price | formatedNumber }} у.е.
           </b>
 
           <fieldset class="form__block">
@@ -207,7 +207,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import formatedNumber from '@/services/formatedNumber.service';
+import { formatedNumber } from '@/services/formated.service';
 import InputRadioColorItem from '@/components/Form/InputRadioColorItem.vue';
 import ProductCounter from '@/components/Product/ProductCounter.vue';
 
